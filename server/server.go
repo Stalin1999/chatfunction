@@ -7,7 +7,7 @@ import (
 	"net"
 	t "time"
 
-	chittychat "github.com/Stalin1999/chatfunction.git"
+	chittychat "github.com/Stalin1999/chatfunction/chittychat"
 
 	"google.golang.org/grpc"
 )

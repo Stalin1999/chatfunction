@@ -7,7 +7,7 @@ import (
     "log"
 
 	t "time"
-    "github.com/Stalin1999/chatfunction.git"
+    chittychat "github.com/Stalin1999/chatfunction/chittychat"
 )
 
 func main() {

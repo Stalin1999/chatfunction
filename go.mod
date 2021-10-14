@@ -1,4 +1,4 @@
-module github.com/Stalin1999/chatfunction.git
+module github.com/Stalin1999/chatfunction
 
 go 1.17
 
