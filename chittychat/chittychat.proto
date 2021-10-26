@@ -11,11 +11,11 @@ service Service {
 message Publish {
     string user = 1;
     string message = 2;
-    int32 time = 3;
+    string time = 3;
 }
 
 message Broadcast {
     string user = 1;
     string message = 2;
-    int32 time = 3;
+    string time = 3;
 }

@@ -73,7 +73,7 @@ func (ch *clienthandle) sendMessage() {
         clientMessageBox := &chittychat.Publish{
             User: ch.clientName,
             Message: clientMessage,
-			Time: 0,
+			Time: "Sut",
         }
 
         err = ch.stream.Send(clientMessageBox)
@@ -86,13 +86,12 @@ func (ch *clienthandle) sendMessage() {
 
 func (ch *clienthandle) recieveMessage(){
     for {
-        //mssg, err := ch.stream.Recv()
-        //if err != nil {
-        //    log.Printf("Error recieving message from server %s", err)
-        //}
+        mssg, err := ch.stream.Recv()
+        if err != nil {
+            log.Printf("Error recieving message from server %s", err)
+        }
 
-        //fmt.Printf("&s : &s : &s \n", mssg.User, mssg.Message, mssg.Time)
+        fmt.Printf("&s : &s : &s \n", mssg.User, mssg.Message, mssg.Time)
 
-        fmt.Printf("Test")
     }
 }
