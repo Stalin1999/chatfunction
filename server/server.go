@@ -14,7 +14,7 @@ import (
 )
 
 type Server struct {
-	chittychat.UnimplementedServiceServer
+	chittychat.ServiceServer
 }
 
 /* func (s *Server) GetTime(ctx context.Context, in *chittychat.GetTimeRequest) (*chittychat.GetTimeReply, error) {

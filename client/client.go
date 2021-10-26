@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+    "strings"
+
 	//"os/user"
 
 	//"google.golang.org/genproto/googleapis/streetview/publish/v1"
@@ -29,14 +31,18 @@ func main() {
 	// Create new Client from generated gRPC code from proto
 	c := chittychat.NewServiceClient(conn)
 
-	for {
-		reader := bufio.NewReader(os.Stdin)
-		clientMessage, err := reader.ReadString('\n')
-		if err != nil {
-			log.Fatalf("Failed to read message", err)
-		}
-		SendRequest(c, clientMessage)
+	stream, err := c.ChatService(context.Background())
+	if err != nil {
+		log.Fatalf("Failed to call ChatService :: %v", err)
 	}
+
+    ch := clienthandle{stream: stream}
+    ch.clientConfig()
+    go ch.sendMessage()
+    go ch.recieveMessage()
+
+    bl := make(chan bool)
+    <-bl
 }
 
 type clienthandle struct {
@@ -44,23 +50,45 @@ type clienthandle struct {
     clientName string
 }
 
-func SendRequest(c chittychat.ServiceClient, message2 string) {
-	// Between the curly brackets are nothing, because the .proto file expects no input.
-	message := chittychat.Publish{}
-
-	response, err := c.ChatService(context.Background(), &message)
+func(ch *clienthandle) clientConfig(){
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Printf("Your UserName: ")
+	Name, err := reader.ReadString('\n')
 	if err != nil {
-		log.Fatalf("Error when calling: %s", err)
+		log.Fatalf(" Failed to read from console: &v", err)
 	}
+	ch.clientName = strings.Trim(Name,"\r\n")
+}
 
-	fmt.Printf("Response from the Server: %s \n", response)
+func (ch *clienthandle) sendMessage() {
+    for {
+        
+        reader := bufio.NewReader(os.Stdin)
+        clientMessage, err := reader.ReadString('\n')
+        if err != nil {
+            log.Fatalf("Failed to read message", err)
+        }
+        clientMessage = strings.Trim(clientMessage, "\r\n")
+
+        clientMessageBox := &chittychat.Publish{
+            User: ch.clientName,
+            Message: clientMessage,
+			Time: 0,
+        }
+
+        err = ch.stream.Send(clientMessageBox)
+        
+        if err != nil {
+            log.Printf("Error sending the message to the server: %v", err)
+        }
+    }
 }
 
 func (ch *clienthandle) recieveMessage(){
     for {
         mssg, err := ch.stream.Recv()
         if err != nil {
-            log.Printf("Error recieving message from server", err)
+            log.Printf("Error recieving message from server %s", err)
         }
 
         fmt.Println(mssg.User, mssg.Message)
