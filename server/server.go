@@ -1,11 +1,12 @@
 package main
 
 import (
-	"context"
-	"fmt"
+	//"context"
+	//"fmt"
 	"log"
 	"net"
-	t "time"
+
+	//t "time"
 
 	chittychat "github.com/Stalin1999/chatfunction/chittychat"
 
@@ -13,24 +14,29 @@ import (
 )
 
 type Server struct {
-	chittychat.UnimplementedGetCurrentTimeServer
+	chittychat.UnimplementedServiceServer
 }
 
-func (s *Server) GetTime(ctx context.Context, in *chittychat.GetTimeRequest) (*chittychat.GetTimeReply, error) {
+/* func (s *Server) GetTime(ctx context.Context, in *chittychat.GetTimeRequest) (*chittychat.GetTimeReply, error) {
 	fmt.Printf("Received get time request")
 	return &chittychat.GetTimeReply{Reply: t.Now().String()}, nil
-}
+} */
 
 func main() {
-	// Create listener tcp on port 9080
+	// init listener and tcp on port 9080
 	list, err := net.Listen("tcp", ":9080")
 	if err != nil {
-		log.Fatalf("Failed to listen on port 9080: %v", err)
+		log.Fatalf("Could not listen to port 9080: %v", err)
 	}
-	grpcServer := grpc.NewServer()
-	chittychat.RegisterGetCurrentTimeServer(grpcServer, &Server{})
 
+	//gRPC server instance
+	grpcServer := grpc.NewServer()
+
+	//cc := chittychat.ChatServer{}
+	chittychat.RegisterServiceServer(grpcServer, &Server{})
+
+	//gRPC listen and serve
 	if err := grpcServer.Serve(list); err != nil {
-		log.Fatalf("failed to server %v", err)
+		log.Fatalf("Failed to start server %v", err)
 	}
 }

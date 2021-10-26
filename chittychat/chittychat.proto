@@ -2,16 +2,20 @@ syntax = "proto3";
 
 package chittychat;
 
-option go_package = "https://github.com/Stalin1999/chatfunction.git";
+option go_package = "github.com/Stalin1999/chatfunction;chittychat";
 
-service getCurrentTime {
-    rpc getTime (GetTimeRequest) returns (GetTimeReply) {}
+service Service {
+    rpc ChatService(stream Publish) returns (stream Broadcast);
 }
 
-message GetTimeRequest {}
-
-message GetTimeReply {
-    string reply = 1;
+message Publish {
+    string user = 1;
+    string message = 2;
+    int32 time = 3;
 }
 
-
+message Broadcast {
+    string user = 1;
+    string message = 2;
+    int32 time = 3;
+}
